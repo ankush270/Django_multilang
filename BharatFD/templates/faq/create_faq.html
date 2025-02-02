@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block create %}
+<div class="create-faq">
+    <h2>Create New FAQ</h2>
+    <form method="POST">
+        {% csrf_token %}
+        {{ form.media }}  
+        
+        <div class="form-group">
+            <label>Question (English):</label>
+            <input type="text" name="question" required>
+        </div>
+
+        <div class="form-group">
+            <label>Answer (English):</label>
+            <textarea name="answer" id="id_answer"></textarea>
+        </div>
+
+        <!-- Language fields container -->
+        <div id="language-fields">
+            <!-- Predefined language fields will be added here -->
+        </div>
+
+        <!-- Language selection dropdown -->
+        <div class="form-group">
+            <label>Select Languages:</label>
+            <select id="language-select" multiple>
+                <option value="hi">Hindi</option>
+                <option value="bn">Bengali</option>
+                <option value="gu">Gujarati</option>
+                <option value="ta">Tamil</option>
+                <option value="te">Telugu</option>
+                <!-- <option value="ml">Malayalam</option> -->
+                <option value="kn">Kannada</option>
+                <!-- <option value="or">Odia</option>
+                <option value="si">Sinhala</option>
+                <option value="my">Burmese</option> -->
+            </select>
+        </div>
+
+        <button type="submit">Create FAQ</button>
+    </form>
+</div>
+
+<!-- Move scripts inside the block -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script type="text/javascript" src="{% static 'ckeditor/ckeditor.js' %}"></script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        CKEDITOR.replace('id_answer');
+        
+        // Predefined languages list
+        const languages = {
+            "hi": "Hindi",
+            "bn": "Bengali",
+            "gu": "Gujarati",
+            "ta": "Tamil",
+            "te": "Telugu",
+            // "ml": "Malayalam",
+            "kn": "Kannada",
+            // "or": "Odia",
+            // "si": "Sinhala",
+            // "my": "Burmese"
+        };
+
+        // Add language fields when the user selects languages
+        $('#language-select').change(function() {
+            const selectedLanguages = $(this).val();
+            $('#language-fields').empty(); // Clear previous dynamic fields
+
+            selectedLanguages.forEach(langCode => {
+                // Add Question field for each selected language
+                const questionField = `
+                    <div class="form-group">
+                        <label>Question (${languages[langCode]}):</label>
+                        <input type="text" name="question_${langCode}">
+                    </div>
+                `;
+                // Add Answer field for each selected language
+                const answerField = `
+                    <div class="form-group">
+                        <label>Answer (${languages[langCode]}):</label>
+                        <textarea name="answer_${langCode}"></textarea>
+                    </div>
+                `;
+                
+                // Append fields to the container
+                $('#language-fields').append(questionField);
+                $('#language-fields').append(answerField);
+            });
+
+            // Initialize CKEditor for dynamically added textareas
+            $(document).ajaxStop(function() {
+                // Replace all textareas with CKEditor
+                $('textarea').each(function() {
+                    if (!CKEDITOR.instances[this.id]) {
+                        CKEDITOR.replace(this);
+                    }
+                });
+            });
+        });
+    });
+</script>
+{% endblock %}

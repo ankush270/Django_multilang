@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="faq-container">
+    <h1>Frequently Asked Questions</h1>
+    
+    
+    <div class="language-selector">
+        <select id="language-dropdown" onchange="changeLanguage(this.value)">
+            <option value="en" {% if current_language == 'en' %}selected{% endif %}>English</option>
+            <option value="hi" {% if current_language == 'hi' %}selected{% endif %}>हिन्दी</option>
+            <option value="bn" {% if current_language == 'bn' %}selected{% endif %}>বাংলা</option>
+            <option value="gu" {% if current_language == 'gu' %}selected{% endif %}>ગુજરાતી</option>
+            <option value="ta" {% if current_language == 'ta' %}selected{% endif %}>தமிழ்</option>
+            <option value="te" {% if current_language == 'te' %}selected{% endif %}>తెలుగు</option>
+            <!-- <option value="ml" {% if current_language == 'ml' %}selected{% endif %}>മലയാളം</option> -->
+            <option value="kn" {% if current_language == 'kn' %}selected{% endif %}>ಕನ್ನಡ</option>
+            <!-- <option value="or" {% if current_language == 'or' %}selected{% endif %}>ଓଡ଼ିଆ</option>
+            <option value="si" {% if current_language == 'si' %}selected{% endif %}>සිංහල</option>
+            <option value="my" {% if current_language == 'my' %}selected{% endif %}>မြန်မာ</option> -->
+        </select>
+    </div>
+    
+    <script>
+        function changeLanguage(lang) {
+            window.location.href = "?lang=" + lang;
+        }
+    </script>
+    
+    
+    <!-- FAQ List -->
+    <div class="faq-list">
+        {% for faq in faqs %}
+        <div class="faq-item">
+            <h3>{{ faq.question }}</h3>  <!-- Directly use the translated question -->
+        <p>{{ faq.answer|safe }}</p>  <!-- Use |safe to render HTML content properly -->
+    </div>
+        {% empty %}
+        <p>No FAQs available.</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
+
